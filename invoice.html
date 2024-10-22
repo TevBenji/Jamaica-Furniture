@@ -1,0 +1,198 @@
+<!-- invoice.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice - Jamaica Furniture</title>
+    <style>
+        .invoice-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+
+        .invoice-header h1 {
+            color: #1a1a1a;
+        }
+
+        .invoice-header span {
+            color: #fd8f44;
+        }
+
+        .invoice-details {
+            margin-bottom: 30px;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .invoice-table th,
+        .invoice-table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .invoice-table th {
+            background-color: #f5f5f5;
+        }
+
+        .invoice-summary {
+            float: right;
+            width: 300px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .invoice-actions {
+            clear: both;
+            padding-top: 30px;
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            margin: 0 10px;
+            background-color: #fd8f44;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #e67e3a;
+        }
+
+        .btn.cancel {
+            background-color: #666;
+        }
+
+        .btn.cancel:hover {
+            background-color: #555;
+        }
+
+        @media print {
+            .invoice-actions {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <div class="invoice-header">
+            <div>
+                <h1>Jamaica<span>Furniture</span></h1>
+                <p>Invoice #: <span id="invoiceNumber"></span></p>
+                <p>Date: <span id="invoiceDate"></span></p>
+            </div>
+        </div>
+
+        <div class="invoice-details">
+            <h3>Bill To:</h3>
+            <p id="customerName"></p>
+            <p id="customerEmail"></p>
+        </div>
+
+        <table class="invoice-table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="invoiceItems">
+                <!-- Items will be added dynamically -->
+            </tbody>
+        </table>
+
+        <div class="invoice-summary">
+            <div class="summary-row">
+                <span>Subtotal:</span>
+                <span id="subtotal"></span>
+            </div>
+            <div class="summary-row">
+                <span>Tax (15%):</span>
+                <span id="tax"></span>
+            </div>
+            <div class="summary-row">
+                <span>Total:</span>
+                <span id="total"></span>
+            </div>
+        </div>
+
+        <div class="invoice-actions">
+            <a href="#" class="btn" onclick="window.print()">Print Invoice</a>
+            <a href="index.html" class="btn cancel">Back to Shop</a>
+        </div>
+    </div>
+
+    <script>
+        // Sample data - in a real application, this would come from your cart/checkout system
+        const invoice = {
+            number: 'INV-2024-001',
+            date: new Date().toLocaleDateString(),
+            customer: {
+                name: 'John Doe',
+                email: 'john@example.com'
+            },
+            items: [
+                { name: 'Brown Chair', quantity: 2, price: 5499 },
+                { name: 'Sofa', quantity: 1, price: 10999 }
+            ]
+        };
+
+        // Populate invoice details
+        document.getElementById('invoiceNumber').textContent = invoice.number;
+        document.getElementById('invoiceDate').textContent = invoice.date;
+        document.getElementById('customerName').textContent = invoice.customer.name;
+        document.getElementById('customerEmail').textContent = invoice.customer.email;
+
+        // Calculate and populate items
+        const tbody = document.getElementById('invoiceItems');
+        let subtotal = 0;
+
+        invoice.items.forEach(item => {
+            const total = item.quantity * item.price;
+            subtotal += total;
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.name}</td>
+                <td>${item.quantity}</td>
+                <td>$${item.price.toFixed(2)}</td>
+                <td>$${total.toFixed(2)}</td>
+            `;
+            tbody.appendChild(row);
+        });
+
+        const tax = subtotal * 0.15;
+        const total = subtotal + tax;
+
+        document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+        document.getElementById('tax').textContent = `$${tax.toFixed(2)}`;
+        document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+    </script>
+</body>
+</html>
